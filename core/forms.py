@@ -1,5 +1,7 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
+from core import profanity
 from core.models import Subject, normalise_noun
 
 
@@ -11,4 +13,7 @@ class NounForm(forms.Form):
     )
 
     def clean_noun(self) -> str:
-        return normalise_noun(self.cleaned_data["noun"])
+        noun = normalise_noun(self.cleaned_data["noun"])
+        if profanity.is_profane(noun):
+            raise ValidationError("Keep it clean.")
+        return noun

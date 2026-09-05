@@ -1,43 +1,69 @@
+from django.db.models import ProtectedError
 from django.db.utils import IntegrityError
 
 import pytest
 
-from core.models import Subject
+from core.models import Response, Subject
 
 
-@pytest.mark.django_db
-def test_slug_is_generated_from_noun():
-    subject = Subject.objects.create(noun="Hot Tub", verdict=Subject.Verdict.MAYBE, response="Only if it's clean.")
-    assert subject.slug == "hot-tub"
+def make(noun, text="No."):
+    return Subject.objects.create(noun=noun, response=Response.objects.create(text=text))
 
 
 @pytest.mark.django_db
 def test_noun_is_normalised():
-    subject = Subject.objects.create(noun="  Cat  ", verdict=Subject.Verdict.NO, response="No.")
+    subject = make("  Cat  ")
+
     assert subject.noun == "cat"
     assert Subject.objects.get(noun="cat") == subject
 
 
 @pytest.mark.django_db
-def test_explicit_slug_is_kept():
-    subject = Subject.objects.create(noun="bicycle", slug="bike", verdict=Subject.Verdict.YES, response="Yes.")
-    assert subject.slug == "bike"
-
-
-@pytest.mark.django_db
 def test_noun_is_unique():
-    Subject.objects.create(noun="cat", verdict=Subject.Verdict.NO, response="No.")
+    make("cat", "First.")
+
     with pytest.raises(IntegrityError):
-        Subject.objects.create(noun="cat", verdict=Subject.Verdict.YES, response="Yes.")
+        make("cat", "Second.")
 
 
 @pytest.mark.django_db
 def test_str_is_the_noun():
-    assert str(Subject.objects.create(noun="cat", verdict=Subject.Verdict.NO, response="No.")) == "cat"
+    assert str(make("cat")) == "cat"
 
 
 @pytest.mark.django_db
 def test_ordering_is_by_noun():
     for noun in ["zebra", "aardvark", "moose"]:
-        Subject.objects.create(noun=noun, verdict=Subject.Verdict.YES, response="Yes.")
+        make(noun, f"No to {noun}.")
+
     assert [s.noun for s in Subject.objects.all()] == ["aardvark", "moose", "zebra"]
+
+
+@pytest.mark.django_db
+def test_response_text_is_unique():
+    Response.objects.create(text="Absolutely not.")
+
+    with pytest.raises(IntegrityError):
+        Response.objects.create(text="Absolutely not.")
+
+
+@pytest.mark.django_db
+def test_a_response_can_only_be_claimed_once():
+    response = Response.objects.create(text="Absolutely not.")
+    Subject.objects.create(noun="cat", response=response)
+
+    with pytest.raises(IntegrityError):
+        Subject.objects.create(noun="moose", response=response)
+
+
+@pytest.mark.django_db
+def test_a_claimed_response_cannot_be_deleted():
+    subject = make("cat")
+
+    with pytest.raises(ProtectedError):
+        subject.response.delete()
+
+
+@pytest.mark.django_db
+def test_str_of_a_response_is_its_text():
+    assert str(Response.objects.create(text="Absolutely not.")) == "Absolutely not."

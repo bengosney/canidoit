@@ -1,7 +1,27 @@
 from typing import ClassVar
 
 from django.db import models
-from django.utils.text import slugify
+
+# Long enough for "my next door neighbour", short enough to rule out prose.
+MAX_NOUN_LENGTH = 30
+
+
+class Response(models.Model):
+    """A pre-generated refusal, waiting to be claimed by a noun.
+
+    The pool is filled in the background so that answering a visitor never
+    waits on the model. A row is claimed by exactly one Subject and then kept,
+    so `text` stays unique across everything ever served.
+    """
+
+    text = models.TextField(unique=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering: ClassVar[list[str]] = ["created"]
+
+    def __str__(self) -> str:
+        return self.text
 
 
 def normalise_noun(noun: str) -> str:
@@ -10,15 +30,15 @@ def normalise_noun(noun: str) -> str:
 
 
 class Subject(models.Model):
-    class Verdict(models.TextChoices):
-        YES = "yes", "Yes"
-        NO = "no", "No"
-        MAYBE = "maybe", "Maybe"
+    """A noun someone has asked about, and the response it claimed."""
 
-    noun = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=100, unique=True, blank=True)
-    verdict = models.CharField(max_length=5, choices=Verdict)
-    response = models.TextField(help_text="The answer to show, e.g. “only if it's cold”.")
+    noun = models.CharField(max_length=MAX_NOUN_LENGTH, unique=True)
+    response = models.OneToOneField(
+        Response,
+        on_delete=models.PROTECT,
+        related_name="subject",
+        help_text="The pooled response claimed by this noun.",
+    )
 
     class Meta:
         ordering: ClassVar[list[str]] = ["noun"]
@@ -28,16 +48,4 @@ class Subject(models.Model):
 
     def save(self, *args, **kwargs):
         self.noun = normalise_noun(self.noun)
-        if not self.slug:
-            self.slug = self._unique_slug()
         super().save(*args, **kwargs)
-
-    def _unique_slug(self) -> str:
-        """A slug for this noun, suffixed if another subject already has it."""
-        base = slugify(self.noun) or "subject"
-        slug = base
-        suffix = 2
-        while Subject.objects.filter(slug=slug).exclude(pk=self.pk).exists():
-            slug = f"{base}-{suffix}"
-            suffix += 1
-        return slug

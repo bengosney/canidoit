@@ -16,6 +16,7 @@ dependencies = [
   "dj-database-url",
   "django",
   "django-extensions",
+  "django-htmx",
   "granian",
   "gunicorn",
   "psycopg[binary,pool]",

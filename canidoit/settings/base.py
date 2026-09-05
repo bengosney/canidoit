@@ -14,6 +14,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
+    "django_htmx",
+    "template_tags",
+    "core",
 ]
 
 MIDDLEWARE = [
@@ -24,6 +27,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "canidoit.urls"
@@ -40,6 +44,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "template_tags.context_processors.site_verb",
             ],
         },
     },
@@ -88,6 +93,8 @@ LOGOUT_REDIRECT_URL = "/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DOMAIN = os.environ.get("DOMAIN", "localhost:8000")
+
+SITE_VERB = os.environ.get("SITE_VERB", "do")
 
 DATABASES: dict[str, dict[str, Any]] = {
     "default": {

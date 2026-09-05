@@ -4,7 +4,7 @@ from django.urls import reverse
 
 import pytest
 
-from core.models import Subject
+from core.models import Response, Subject
 
 
 @pytest.mark.django_db
@@ -18,7 +18,7 @@ def test_get_without_a_noun_shows_an_empty_form(client):
 
 @pytest.mark.django_db
 def test_known_noun_shows_the_stored_response(client):
-    Subject.objects.create(noun="cat", verdict=Subject.Verdict.NO, response="Obviously not.")
+    Subject.objects.create(noun="cat", response=Response.objects.create(text="Obviously not."))
 
     response = client.get(reverse("core:can_i"), {"noun": "Cat"})
 

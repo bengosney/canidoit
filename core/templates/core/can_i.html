@@ -15,8 +15,8 @@
     </form>
 
     {% if answer %}
-      <output class="answer answer--{{ answer.verdict }}">
-        <p class="answer__verdict">{{ answer.get_verdict_display }}</p>
+      <output class="answer">
+        <p class="answer__verdict">No</p>
         <p class="answer__response">{{ answer.response }}</p>
       </output>
     {% endif %}

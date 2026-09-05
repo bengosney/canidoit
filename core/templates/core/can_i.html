@@ -1,5 +1,24 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div>can i?</div>
+  <div id="can-i">
+    <form method="get"
+          action="{% url 'core:can_i' %}"
+          hx-get="{% url 'core:can_i' %}"
+          hx-target="#can-i"
+          hx-swap="outerHTML"
+          hx-push-url="true">
+      <label for="{{ form.noun.id_for_label }}">Can I {{ site_verb }}</label>
+      {{ form.noun }}
+      <button type="submit">?</button>
+      {% if form.noun.errors %}<ul class="errors">{% for error in form.noun.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+    </form>
+
+    {% if answer %}
+      <output class="answer answer--{{ answer.verdict }}">
+        <p class="answer__verdict">{{ answer.get_verdict_display }}</p>
+        <p class="answer__response">{{ answer.response }}</p>
+      </output>
+    {% endif %}
+  </div>
 {% endblock %}

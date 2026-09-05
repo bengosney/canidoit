@@ -1,9 +1,9 @@
 from django.urls import path
 
-from . import views
+from core import views
 
-app_name = "strava"
+app_name = "core"
 
 urlpatterns = [
-    path("", views.can_i, name="index"),
+    path("", views.can_i, name="can_i"),
 ]

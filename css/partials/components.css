@@ -1,0 +1,55 @@
+form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.noun {
+  flex: 1 1 12rem;
+  padding: 0.5rem 0.75rem;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--edge);
+  border-radius: 4px;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  font: inherit;
+  cursor: pointer;
+  color: var(--paper);
+  background: var(--ink);
+  border: 0;
+  border-radius: 4px;
+}
+
+.errors {
+  flex-basis: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--no);
+  font-size: 0.875rem;
+}
+
+.answer {
+  display: block;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--edge);
+}
+
+.answer__verdict {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--no);
+}
+
+.answer__response {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+}

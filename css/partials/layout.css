@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+}
+
+main {
+  width: min(40rem, 100% - 2rem);
+  padding: 2rem 0;
+}
+
+footer {
+  color: var(--muted);
+  font-size: 0.875rem;
+}

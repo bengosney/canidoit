@@ -9,7 +9,9 @@ class NounForm(forms.Form):
     noun = forms.CharField(
         max_length=Subject._meta.get_field("noun").max_length,
         label="",
-        widget=forms.TextInput(attrs={"placeholder": "a thing", "autofocus": True, "autocomplete": "off"}),
+        widget=forms.TextInput(
+            attrs={"class": "noun", "placeholder": "a thing", "autofocus": True, "autocomplete": "off"}
+        ),
     )
 
     def clean_noun(self) -> str:

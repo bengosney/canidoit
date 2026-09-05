@@ -15,6 +15,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "django_htmx",
+    "django_tasks_db",
     "template_tags",
     "core",
 ]
@@ -95,6 +96,19 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 DOMAIN = os.environ.get("DOMAIN", "localhost:8000")
 
 SITE_VERB = os.environ.get("SITE_VERB", "do")
+
+TASKS = {
+    "default": {
+        "BACKEND": "django_tasks_db.DatabaseBackend",
+        "QUEUES": ["default"],
+    },
+}
+
+# The small self-hosted model that writes answers for nouns we don't know.
+LLM_ENABLED = os.environ.get("LLM_ENABLED", "1") == "1"
+LLM_BASE_URL = os.environ.get("LLM_BASE_URL", "http://127.0.0.1:11434")
+LLM_MODEL = os.environ.get("LLM_MODEL", "qwen2.5:0.5b-instruct-q4_K_M")
+LLM_TIMEOUT = int(os.environ.get("LLM_TIMEOUT", "30"))
 
 DATABASES: dict[str, dict[str, Any]] = {
     "default": {

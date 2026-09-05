@@ -13,13 +13,16 @@ classifiers = [
   "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
+  "alt-profanity-check",
   "dj-database-url",
   "django",
   "django-extensions",
   "django-htmx",
+  "django-tasks-db",
   "granian",
   "gunicorn",
   "psycopg[binary,pool]",
+  "requests",
   "setuptools",
   "whitenoise",
 ]

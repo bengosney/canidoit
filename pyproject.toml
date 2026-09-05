@@ -1,0 +1,98 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [ "setuptools" ]
+
+[project]
+name = "canidoit"
+version = "0.0.1"
+description = "Description of project"
+authors = [ { name = "Ben Gosney", email = "bengosney@googlemail.com" } ]
+requires-python = ">=3.14"
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+  "dj-database-url",
+  "django",
+  "django-extensions",
+  "granian",
+  "gunicorn",
+  "psycopg[binary,pool]",
+  "setuptools",
+  "whitenoise",
+]
+optional-dependencies.dev = [
+  "commitizen",
+  "django-browser-reload",
+  "django-debug-toolbar",
+  "django-debugtools",
+  "django-stubs[compatible-mypy]",
+  "django-stubs-ext",
+  "django-zeal",
+  "granian[reload]",
+  "icecream",
+  "mypy",
+  "pip-tools",
+  "pre-commit",
+  "ruff",
+]
+optional-dependencies.test = [
+  "model-bakery",
+  "pytest",
+  "pytest-cov",
+  "pytest-django",
+  "pytest-mock",
+]
+
+[tool.setuptools]
+packages = [ "canidoit" ]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 120
+exclude = [ "migrations" ]
+format.indent-style = "space"
+format.quote-style = "double"
+format.docstring-code-format = true
+lint.select = [ "C90", "DJ", "E", "ERA", "F", "FURB", "I", "N", "PERF", "PL", "RUF", "TRY", "UP" ]
+lint.ignore = [ "TRY003" ]
+lint.isort.section-order = [
+  "future",
+  "standard-library",
+  "django",
+  "third-party",
+  "first-party",
+  "local-folder",
+]
+lint.isort.sections.django = [ "django" ]
+
+[tool.pycln]
+all = true
+
+[tool.mypy]
+plugins = [ "mypy_django_plugin.main" ]
+
+[tool.django-stubs]
+django_settings_module = "canidoit.settings.dev"
+
+[tool.pytest]
+ini_options.python_files = [ "*_tests.py", "test_*.py", "tests.py" ]
+ini_options.DJANGO_SETTINGS_MODULE = "canidoit.settings.test"
+
+[tool.coverage]
+run.omit = [
+  "*/migrations/*",
+  "*/urls.py",
+  "asgi.py",
+  "canidoit/settings/*.py",
+  "manage.py",
+  "wsgi.py",
+]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version_scheme = "pep440"
+version_provider = "pep621"
+tag_format = "$version"
+update_changelog_on_bump = true

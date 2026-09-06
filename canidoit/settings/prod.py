@@ -40,6 +40,11 @@ if os.environ.get("DATABASE_URL"):
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
+# www is canonical: BASE_URL and the CNAME both point there, so send the apex on.
+# CommonMiddleware applies this after ALLOWED_HOSTS, which therefore has to list
+# the apex too.
+PREPEND_WWW = True
+
 SECRET_KEY = env["SECRET_KEY"]
 
 STORAGES = {

@@ -10,7 +10,7 @@ class NounForm(forms.Form):
         max_length=Subject._meta.get_field("noun").max_length,
         label="",
         widget=forms.TextInput(
-            attrs={"class": "noun", "placeholder": "a thing", "autofocus": True, "autocomplete": "off"}
+            attrs={"class": "noun", "placeholder": "thing", "autofocus": True, "autocomplete": "off"}
         ),
     )
 

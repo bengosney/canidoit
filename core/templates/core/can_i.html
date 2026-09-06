@@ -10,9 +10,11 @@
           hx-swap="outerHTML"
           hx-push-url="true">
       <div class="ask__row">
-        <label class="ask__lead" for="{{ form.noun.id_for_label }}">Can I {{ site_verb }}</label>
-        {{ form.noun }}
-        <button class="ask__submit" type="submit" aria-label="Request a determination">?</button>
+        <label class="ask__lead" for="{{ form.noun.id_for_label }}">Can I {{ site_verb }} <span class="ask__article">(a)</span></label>
+        <div class="ask__group">
+          {{ form.noun }}
+          <button class="ask__submit" type="submit" aria-label="Request a determination">?</button>
+        </div>
       </div>
       {% if form.noun.errors %}
         <ul class="errors">{% for error in form.noun.errors %}<li>{{ error }}</li>{% endfor %}</ul>
@@ -30,8 +32,6 @@
           </div>
         </div>
       </output>
-    {% else %}
-      <p class="hint">Type the thing. A determination will be issued.</p>
     {% endif %}
   </div>
 {% endblock %}

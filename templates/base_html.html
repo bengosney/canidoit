@@ -11,9 +11,10 @@
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap"
           rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/main.min.css' %}" />
+    {% htmx_script %}
     <noscript><style>.js { display: none } </style></noscript>
   </head>
-  <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-ext="remove, auto-target">
+  <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     {% block body %}
       <header class="masthead">
         <div class="masthead__mark">CanI{{ site_verb|title }}It</div>
@@ -25,7 +26,5 @@
         <p>&copy; CanI{{ site_verb|title }}It {% now "Y" %}</p>
       </footer>
     {% endblock body %}
-
-    {% django_htmx_script %}
   </body>
 </html>

@@ -22,9 +22,18 @@
 }
 
 .ask__lead {
-  font-size: 52px;
+  font-size: clamp(50px, 15vw, 52px);
   line-height: 1.1;
   letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.ask__article {
+  font-style: italic;
+}
+
+.ask__group {
+  white-space: nowrap;
 }
 
 /* The input grows with what is typed where field-sizing is supported, and
@@ -35,7 +44,7 @@
   line-height: 1.1;
   width: 12ch;
   min-width: 0;
-  max-width: 100%;
+  max-width: 60vw;
   field-sizing: content;
   padding: 0 4px 4px;
   color: var(--ink);
@@ -76,13 +85,6 @@
   font-size: 18px;
   font-style: italic;
   color: var(--accent);
-}
-
-.hint {
-  margin: 30px 0 0;
-  font-size: 18px;
-  font-style: italic;
-  color: var(--quiet);
 }
 
 .determination {

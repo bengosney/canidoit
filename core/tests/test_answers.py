@@ -1,6 +1,6 @@
 import pytest
 
-from core.answers import FALLBACKS, Answer, answer_for, claim_response, save_random_subject
+from core.answers import FALLBACKS, answer_for, case_number, claim_response, save_random_subject
 from core.models import Response, Subject
 
 
@@ -10,9 +10,13 @@ def make(noun, text):
 
 @pytest.mark.django_db
 def test_known_noun_returns_its_stored_answer():
-    make("cat", "Obviously not.")
+    subject = make("cat", "Obviously not.")
 
-    assert answer_for("cat") == Answer(noun="cat", response="Obviously not.")
+    answer = answer_for("cat")
+
+    assert (answer.noun, answer.response) == ("cat", "Obviously not.")
+    assert answer.case_no == case_number(subject.pk)
+    assert answer.issued == subject.response.created
 
 
 @pytest.mark.django_db
@@ -122,3 +126,15 @@ def test_claim_response_links_the_subject():
 @pytest.mark.parametrize("template", FALLBACKS)
 def test_every_fallback_mentions_the_noun(template):
     assert "{noun}" in template
+
+
+@pytest.mark.parametrize("pk", [1, 2, 3, 17, 400])
+def test_case_numbers_are_stable_and_well_formed(pk):
+    assert case_number(pk) == case_number(pk), "must not change between renders"
+    number, _, letter = case_number(pk).partition("-")
+    assert number.isdigit()
+    assert letter in "BDFHK"
+
+
+def test_case_numbers_differ_between_subjects():
+    assert case_number(1) != case_number(2)

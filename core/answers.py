@@ -9,6 +9,7 @@ hardcoded list.
 import logging
 import random
 from dataclasses import dataclass
+from datetime import datetime
 
 from django.db import connection, transaction
 
@@ -27,14 +28,30 @@ FALLBACKS: list[str] = [
 ]
 
 
+# Cosmetic, from the design: every answer is presented as a filed determination.
+CASE_LETTERS = "BDFHK"
+
+
+def case_number(pk: int) -> str:
+    """A stable case reference, so a noun always cites the same one."""
+    return f"{4400 + pk * 7}-{CASE_LETTERS[pk % len(CASE_LETTERS)]}"
+
+
 @dataclass(frozen=True)
 class Answer:
     noun: str
     response: str
+    case_no: str
+    issued: datetime
 
     @classmethod
     def from_subject(cls, subject: Subject) -> Answer:
-        return cls(noun=subject.noun, response=subject.response.text)
+        return cls(
+            noun=subject.noun,
+            response=subject.response.text,
+            case_no=case_number(subject.pk),
+            issued=subject.response.created,
+        )
 
 
 def _unclaimed():

@@ -2,23 +2,36 @@
 
 {% block content %}
   <div id="can-i">
-    <form method="get"
+    <form class="ask"
+          method="get"
           action="{% url 'core:can_i' %}"
           hx-get="{% url 'core:can_i' %}"
           hx-target="#can-i"
           hx-swap="outerHTML"
           hx-push-url="true">
-      <label for="{{ form.noun.id_for_label }}">Can I {{ site_verb }}</label>
-      {{ form.noun }}
-      <button type="submit">?</button>
-      {% if form.noun.errors %}<ul class="errors">{% for error in form.noun.errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+      <div class="ask__row">
+        <label class="ask__lead" for="{{ form.noun.id_for_label }}">Can I {{ site_verb }}</label>
+        {{ form.noun }}
+        <button class="ask__submit" type="submit" aria-label="Request a determination">?</button>
+      </div>
+      {% if form.noun.errors %}
+        <ul class="errors">{% for error in form.noun.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+      {% endif %}
     </form>
 
     {% if answer %}
-      <output class="answer">
-        <p class="answer__verdict">No</p>
-        <p class="answer__response">{{ answer.response }}</p>
+      <output class="determination">
+        <p class="determination__verdict">No.</p>
+        <div class="determination__body">
+          <p class="determination__reason">{{ answer.response }}</p>
+          <div class="determination__meta">
+            <div>Determination {{ answer.case_no }}</div>
+            <div>Issued {{ answer.issued|date:"j F Y" }} &middot; final</div>
+          </div>
+        </div>
       </output>
+    {% else %}
+      <p class="hint">Type the thing. A determination will be issued.</p>
     {% endif %}
   </div>
 {% endblock %}

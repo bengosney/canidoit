@@ -54,3 +54,18 @@ def test_unknown_noun_is_persisted_by_the_view(client):
     client.get(reverse("core:can_i"), {"noun": "aardvark"})
 
     assert Subject.objects.filter(noun="aardvark").exists()
+
+
+@pytest.mark.django_db
+def test_autofocus_is_dropped_once_an_answer_is_shown(client):
+    """Autofocus would reopen the mobile keyboard over the determination."""
+    response = client.get(reverse("core:can_i"), {"noun": "otter"})
+
+    assert "autofocus" not in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_autofocus_is_present_with_nothing_to_read(client):
+    response = client.get(reverse("core:can_i"))
+
+    assert "autofocus" in response.content.decode()

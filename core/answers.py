@@ -55,8 +55,14 @@ class Answer:
 
 
 def _unclaimed():
-    """The pool, locked where the database supports it."""
-    pool = Response.objects.filter(subject__isnull=True)
+    """The pool, locked where the database supports it.
+
+    Excludes claimed rows with a subquery rather than `subject__isnull=True`,
+    which Django compiles to a LEFT OUTER JOIN: Postgres refuses FOR UPDATE on
+    the nullable side of one. SQLite has no FOR UPDATE, so the old join only
+    ever failed in production.
+    """
+    pool = Response.objects.exclude(pk__in=Subject.objects.values("response_id"))
     if connection.features.has_select_for_update:
         pool = pool.select_for_update(skip_locked=connection.features.has_select_for_update_skip_locked)
     return pool
